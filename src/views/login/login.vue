@@ -10,6 +10,7 @@
         <span class="line"></span>
         <span class="sub-title">用户登陆</span>
       </div>
+      <!-- 登录框表单 -->
       <el-form ref="form" :model="form" label-width="43px" class="from">
         <el-form-item>
           <el-input v-model="form.name" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
