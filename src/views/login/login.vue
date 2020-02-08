@@ -46,18 +46,26 @@
           <el-button class="my-btn" @click="submitForm('loginForm')" type="primary">登录</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button class="my-btn" type="primary">注册</el-button>
+          <el-button @click="showRegister" class="my-btn" type="primary">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
     <!-- 右侧图片 -->
     <img src="../../assets/login_banner_ele.png" alt />
+    <registerDialog ref="registerDialog"></registerDialog>
   </div>
 </template>
 
 <script>
+
+import registerDialog from "./components/registerDialog.vue";
 export default {
+  // 组件的名字
   name: "login",
+  // 注册组件
+  components: {
+    registerDialog
+  },
   data() {
     return {
       loginForm: {
@@ -83,16 +91,19 @@ export default {
       }
     };
   },
-  methods:{
-    submitForm(formName){
-      this.$refs[formName].validate(valid=>{
+  methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$message.success('验证成功')
+          this.$message.success("验证成功");
         } else {
-          this.$message.error('验证失败')
-          return false
+          this.$message.error("验证失败");
+          return false;
         }
-      })
+      });
+    },
+    showRegister(){
+      this.$refs.registerDialog.dialogFormVisible = true;
     }
   }
 };
@@ -153,7 +164,7 @@ export default {
         width: 100%;
         height: 40px;
       }
-      .code-col{
+      .code-col {
         height: 40px;
       }
     }
