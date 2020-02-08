@@ -11,34 +11,34 @@
         <span class="sub-title">用户登陆</span>
       </div>
       <!-- 登录框表单 -->
-      <el-form ref="form" :model="form" label-width="43px" class="from">
+      <el-form ref="form" :model="loginForm" label-width="43px" class="from">
         <el-form-item>
-          <el-input v-model="form.name" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
+          <el-input v-model="loginForm.phone" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
         </el-form-item>
         <el-form-item>
           <el-input
-            v-model="form.password"
+            v-model="loginForm.password"
             show-password
             prefix-icon="el-icon-lock"
             placeholder="请输入密码"
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-col :span="16">
-            <el-input v-model="form.code" placeholder="请输入验证码" prefix-icon="el-icon-key"></el-input>
+          <el-col :span="17">
+            <el-input v-model="loginForm.loginCode" placeholder="请输入验证码" prefix-icon="el-icon-key"></el-input>
+          </el-col>
+          <el-col :span="7">
+            <img src="../../assets/login-code.png" alt="" class="code">
           </el-col>
         </el-form-item>
         <el-form-item>
-          <el-checkbox-group v-model="form.type">
-            <el-checkbox name="type">
-              <div class="agreement">
-                <span class="span">我已阅读并同意</span>
-                <el-link type="primary">用户协议</el-link>
-                <span class="span">和</span>
-                <el-link type="primary">隐私条款</el-link>
-              </div>
-            </el-checkbox>
-          </el-checkbox-group>
+          <!-- 用户协议 -->
+          <el-checkbox v-model="loginForm.isChecked">
+            我已阅读并同意
+            <el-link type="primary">用户协议</el-link>
+            和
+            <el-link type="primary">隐私条款</el-link>
+          </el-checkbox>
         </el-form-item>
         <el-form-item>
           <el-button class="my-btn" type="primary">登录</el-button>
@@ -58,17 +58,16 @@ export default {
   name: "login",
   data() {
     return {
-      form: {
-        name: "",
+      loginForm: {
+        // 手机号
+        phone: "",
+        //密码
         password: "",
-        code: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
+        // 验证码
+        loginCode: "",
+        //  是否勾选
+        isChecked: false,
         type: [],
-        resource: "",
-        desc: ""
       }
     };
   }
@@ -119,10 +118,16 @@ export default {
       .my-btn {
         width: 100%;
       }
-      .agreement {
+      .el-checkbox {
         display: flex;
         align-items: center;
-        padding-left: 0;
+        .el-checkbox__label{
+          display: flex;
+        }
+      }
+      .code{
+        width: 100%;
+        height:40px;
       }
     }
   }
