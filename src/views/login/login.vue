@@ -11,11 +11,13 @@
         <span class="sub-title">用户登陆</span>
       </div>
       <!-- 登录框表单 -->
-      <el-form ref="form" :model="loginForm" label-width="43px" class="from">
+      <el-form ref="loginForm" :rules="rules" :model="loginForm" label-width="43px" class="from">
+        <!-- 手机号 -->
         <el-form-item>
           <el-input v-model="loginForm.phone" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item>
+        <!-- 密码 -->
+        <el-form-item prop="password">
           <el-input
             v-model="loginForm.password"
             show-password
@@ -23,25 +25,25 @@
             placeholder="请输入密码"
           ></el-input>
         </el-form-item>
-        <el-form-item>
+        <!-- 验证码 -->
+        <el-form-item prop="loginCode">
           <el-col :span="17">
             <el-input v-model="loginForm.loginCode" placeholder="请输入验证码" prefix-icon="el-icon-key"></el-input>
           </el-col>
-          <el-col :span="7">
-            <img src="../../assets/login-code.png" alt="" class="code">
+          <el-col :span="7" class="code-col">
+            <img src="../../assets/login-code.png" alt class="code" />
           </el-col>
         </el-form-item>
+        <!-- 用户协议 -->
         <el-form-item>
-          <!-- 用户协议 -->
           <el-checkbox v-model="loginForm.isChecked">
             我已阅读并同意
-            <el-link type="primary">用户协议</el-link>
-            和
+            <el-link type="primary">用户协议</el-link>和
             <el-link type="primary">隐私条款</el-link>
           </el-checkbox>
         </el-form-item>
         <el-form-item>
-          <el-button class="my-btn" type="primary">登录</el-button>
+          <el-button class="my-btn" @click="submitForm('loginForm')" type="primary">登录</el-button>
         </el-form-item>
         <el-form-item>
           <el-button class="my-btn" type="primary">注册</el-button>
@@ -67,9 +69,31 @@ export default {
         loginCode: "",
         //  是否勾选
         isChecked: false,
-        type: [],
+        type: []
+      },
+      rules: {
+        password: [
+          { required: true, message: "密码不能为空", trigger: "blur" },
+          { min: 6, max: 12, message: "密码的长度为6-12位", trigger: "blur" }
+        ],
+        loginCode: [
+          { required: true, message: "验证码不能为空", trigger: "blur" },
+          { min: 4, max: 4, message: "验证码的长度为4位", trigger: "blur" }
+        ]
       }
     };
+  },
+  methods:{
+    submitForm(formName){
+      this.$refs[formName].validate(valid=>{
+        if (valid) {
+          this.$message.success('验证成功')
+        } else {
+          this.$message.error('验证失败')
+          return false
+        }
+      })
+    }
   }
 };
 </script>
@@ -121,13 +145,16 @@ export default {
       .el-checkbox {
         display: flex;
         align-items: center;
-        .el-checkbox__label{
+        .el-checkbox__label {
           display: flex;
         }
       }
-      .code{
+      .code {
         width: 100%;
-        height:40px;
+        height: 40px;
+      }
+      .code-col{
+        height: 40px;
       }
     }
   }
