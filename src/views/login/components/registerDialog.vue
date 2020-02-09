@@ -25,7 +25,7 @@
             <el-input v-model="form.name" autocomplete="off"></el-input>
           </el-col>
           <el-col :span="7" class="register-box" :offset="1">
-            <img src="../../../assets/login-code.png" alt class="register-code" />
+            <img @click="changeCode" :src="codeURL" alt class="register-code" />
           </el-col>
         </el-row>
       </el-form-item>
@@ -103,9 +103,16 @@ export default {
         ]
       },
       // 左侧文本的间隙
-      formLabelWidth: "62px"
+      formLabelWidth: "62px",
+      codeURL:process.env.VUE_APP_URL+"/captcha?type=sendsms"
     };
-  }
+  },
+  // 方法
+  methods: {
+    changeCode(){
+      this.codeURL = process.env.VUE_APP_URL+"/captcha?type=sendsms&t="+Date.now()
+    }
+  },
 };
 </script>
 
