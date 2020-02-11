@@ -85,7 +85,7 @@ const checkPhone = (rule, value, callback) => {
 };
 // import axios from "axios";
 // 导入接口
-import { sendsms } from "../../../api/register.js";
+import { sendsms } from "@/api/register.js";
 export default {
   data() {
     return {
