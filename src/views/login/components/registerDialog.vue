@@ -67,27 +67,11 @@
 </template>
 
 <script>
-// 邮箱验证
-const checkEmail = (rule, value, callback) => {
-  const reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
-  if (reg.test(value) == true) {
-    callback();
-  } else {
-    callback(new Error("邮箱的格式不对"));
-  }
-};
-// 手机号验证
-const checkPhone = (rule, value, callback) => {
-  const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
-  if (reg.test(value) == true) {
-    callback();
-  } else {
-    callback(new Error("邮箱的格式不对"));
-  }
-};
 // import axios from "axios";
 // 导入接口
 import { sendsms, register } from "@/api/register.js";
+// 定义校验规则函数 - 手机&邮箱
+import { checkPhone,checkEmail } from '@/utils/validator.js'
 export default {
   data() {
     return {
@@ -129,7 +113,7 @@ export default {
         ],
         phone: [
           { required: true, message: "手机号码不能为空", trigger: "blur" },
-          { validator: checkPhone, trigger: "blur" }
+          { validator: checkPhone, trigger: "change" }
         ],
         avatar: [
           { required: true, message: "用户头像不能为空", trigger: "change" }

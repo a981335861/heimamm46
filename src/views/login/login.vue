@@ -13,7 +13,7 @@
       <!-- 登录框表单 -->
       <el-form ref="loginForm" :rules="rules" :model="loginForm" label-width="43px" class="from">
         <!-- 手机号 -->
-        <el-form-item>
+        <el-form-item prop="phone">
           <el-input v-model="loginForm.phone" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
         </el-form-item>
         <!-- 密码 -->
@@ -31,7 +31,7 @@
             <el-input v-model="loginForm.loginCode" placeholder="请输入验证码" prefix-icon="el-icon-key"></el-input>
           </el-col>
           <el-col :span="7" class="code-col">
-            <img src="../../assets/login-code.png" alt class="code" />
+            <img :src="codeURL" @click="changeCode" alt class="code" />
           </el-col>
         </el-form-item>
         <!-- 用户协议 -->
@@ -59,6 +59,12 @@
 <script>
 
 import registerDialog from "./components/registerDialog.vue";
+// 定义校验规则函数 - 手机&邮箱
+import { checkPhone } from '@/utils/validator.js'
+// 导入登录接口
+import {login} from '@/api/login.js'
+// 导入token的工具函数
+import {setToken} from '@/utils/token.js'
 export default {
   // 组件的名字
   name: "login",
@@ -87,23 +93,54 @@ export default {
         loginCode: [
           { required: true, message: "验证码不能为空", trigger: "blur" },
           { min: 4, max: 4, message: "验证码的长度为4位", trigger: "blur" }
+        ],
+        phone: [
+          { required: true, message: "手机号码不能为空", trigger: "blur" },
+          { validator: checkPhone, trigger: "change" }
         ]
-      }
+      },
+      codeURL:process.env.VUE_APP_URL + "/captcha?type=login",
     };
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$message.success("验证成功");
+          // 验证正确
+          // 验证是否勾选
+          if (this.loginForm.isChecked != true) {
+            return this.$message.warning('请勾选用户协议')
+          }
+          login({
+            code: this.loginForm.loginCode,
+            password: this.loginForm.password,
+            phone: this.loginForm.phone,
+          }).then(res => {
+            if (res.data.code === 200) {
+              // 正确
+              this.$message.success("登录成功");
+              // 服务器返回了token
+              // token 保存到 localStorage
+              setToken(res.data.data.token)
+              // 跳转到首页
+              this.$router.push('/index')
+            } else if (res.data.code === 202) {
+              // 服务器返回的提示信息 弹出来
+              this.$message.error(res.data.message);
+            }
+          });
         } else {
-          this.$message.error("验证失败");
+          this.$message.error("登录失败");
           return false;
         }
       });
     },
     showRegister(){
       this.$refs.registerDialog.dialogFormVisible = true;
+    },
+    changeCode(){
+      // 刷新验证码
+      this.codeURL = process.env.VUE_APP_URL + "/captcha?type=login&t="+Date.now()
     }
   }
 };
